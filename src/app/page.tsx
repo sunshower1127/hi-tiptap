@@ -1,5 +1,5 @@
-import Tiptap from "@/components/tiptap";
+import TiptapEditor from "@/components/tiptap/editor";
 
 export default function Home() {
-  return <Tiptap />;
+  return <TiptapEditor />;
 }

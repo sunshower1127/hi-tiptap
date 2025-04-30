@@ -23,6 +23,7 @@
     "@tiptap/pm": "^2.11.7",
     "@tiptap/react": "^2.11.7",
     "@tiptap/starter-kit": "^2.11.7",
+    "es-toolkit": "^1.36.0",
     "lowlight": "^3.3.0",
     "next": "15.3.0",
     "react": "^19.0.0",

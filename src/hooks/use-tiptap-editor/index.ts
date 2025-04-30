@@ -1,7 +1,7 @@
 "use client";
 
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
-import { EditorContent, InputRule, useEditor, wrappingInputRule } from "@tiptap/react";
+import { InputRule, useEditor, wrappingInputRule } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import css from "highlight.js/lib/languages/css";
 import go from "highlight.js/lib/languages/go";
@@ -12,7 +12,7 @@ import shell from "highlight.js/lib/languages/shell";
 import ts from "highlight.js/lib/languages/typescript";
 import html from "highlight.js/lib/languages/xml";
 
-import { all, createLowlight } from "lowlight";
+import { createLowlight } from "lowlight";
 // highlight.js 스타일시트 가져오기
 
 import Details from "@tiptap-pro/extension-details";
@@ -24,7 +24,7 @@ import "highlight.js/styles/tokyo-night-dark.css";
 import ImageResize from "tiptap-extension-resize-image";
 import "./index.css";
 
-const lowlight = createLowlight(all);
+const lowlight = createLowlight();
 
 lowlight.register("html", html);
 lowlight.register("css", css);
@@ -35,14 +35,16 @@ lowlight.register("shell", shell);
 lowlight.register("json", json);
 lowlight.register("python", python);
 
-const Tiptap = () => {
-  const editor = useEditor({
+const useTiptapEditor = (options?: { editable?: boolean; initialContent?: string | null }) =>
+  useEditor({
     extensions: [
       StarterKit.configure({
         codeBlock: false,
         blockquote: false,
       }),
-
+      ImageResize.configure({
+        allowBase64: true,
+      }),
       Blockquote.extend({
         addInputRules() {
           return [
@@ -56,7 +58,7 @@ const Tiptap = () => {
       CodeBlockLowlight.configure({
         lowlight,
       }),
-      ImageResize,
+
       Details.configure({
         persist: true,
         HTMLAttributes: {
@@ -103,7 +105,7 @@ const Tiptap = () => {
             if (htmlContent) {
               // if there is htmlContent, stop manual insertion & let other extensions handle insertion via inputRule
               // you could extract the pasted file from this url string and upload it to a server for example
-              console.log(htmlContent); // eslint-disable-line no-console
+              console.log(htmlContent);
               return false;
             }
 
@@ -126,31 +128,9 @@ const Tiptap = () => {
         },
       }),
     ],
-    content: `
-      <p>Hello World! 🌎️</p>
-      <details>
-        <summary>Summary</summary>
-        <p>Details Content</p>
-      </details>
-      <pre><code class="language-js">// 자바스크립트 예제 코드
-function greet(name) {
-  console.log(\`안녕하세요, \${name}!\`);
-  return name;
-}
-
-// 함수 호출
-const result = greet('홍길동');
-      </code></pre>
-      <p>위 코드는 자바스크립트로 작성된 인사 함수입니다.</p>
-    `,
+    content: options?.initialContent,
     immediatelyRender: false, // SSR 환경에서 hydration 불일치 방지
+    editable: options?.editable,
   });
 
-  return (
-    <div>
-      <EditorContent editor={editor} />
-    </div>
-  );
-};
-
-export default Tiptap;
+export default useTiptapEditor;
